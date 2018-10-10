@@ -11,7 +11,7 @@ load("//tools/build_defs:detect_root.bzl", "detect_root")
 BOOST_ATTRIBUTES = dict(CC_EXTERNAL_RULE_ATTRIBUTES)
 BOOST_ATTRIBUTES.update({
     # Only build these libraries.
-    "boost_libraries": attr.string_list(mandatory = True, default = []),
+    "boost_library": attr.string(mandatory = True),
 })
 
 def _boost_build(ctx):
@@ -19,7 +19,7 @@ def _boost_build(ctx):
         ctx.attr,
         configure_name = "BuildBoost",
         configure_script = _create_configure_script,
-        make_commands = ["./b2 install --prefix=."],
+        make_commands = ["./b2 install --prefix=. --with-{}".format(attrs.boost_library)],
     )
     return cc_external_rule_impl(ctx, attrs)
 
@@ -30,7 +30,7 @@ def _create_configure_script(configureParameters):
     return "\n".join([
         "cd $INSTALLDIR",
         "cp -R $EXT_BUILD_ROOT/{}/. .".format(root),
-        "./bootstrap.sh --with-libraries={}".format(",".join(attrs.boost_libraries)),
+        "./bootstrap.sh --with-libraries={}".format(boost_library),
     ])
 
 """ Rule for building Boost. Invokes bootstrap.sh and then b2 install.
