@@ -30,7 +30,7 @@ def _create_configure_script(configureParameters):
     return "\n".join([
         "cd $INSTALLDIR",
         "cp -R $EXT_BUILD_ROOT/{}/. .".format(root),
-        "./bootstrap.sh --with-libraries={}".format(attrs.boost_library),
+        "./bootstrap.sh --with-libraries={}".format(ctx.attr.boost_library),
     ])
 
 """ Rule for building Boost. Invokes bootstrap.sh and then b2 install.
