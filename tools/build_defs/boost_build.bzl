@@ -19,7 +19,7 @@ def _boost_build(ctx):
         ctx.attr,
         configure_name = "BuildBoost",
         configure_script = _create_configure_script,
-        make_commands = ["./b2 install --prefix=. --with-{}".format(attrs.boost_library)],
+        make_commands = ["./b2 install --prefix=. --with-{}".format(ctx.attr.boost_library)],
     )
     return cc_external_rule_impl(ctx, attrs)
 
@@ -30,7 +30,7 @@ def _create_configure_script(configureParameters):
     return "\n".join([
         "cd $INSTALLDIR",
         "cp -R $EXT_BUILD_ROOT/{}/. .".format(root),
-        "./bootstrap.sh --with-libraries={}".format(boost_library),
+        "./bootstrap.sh --with-libraries={}".format(attrs.boost_library),
     ])
 
 """ Rule for building Boost. Invokes bootstrap.sh and then b2 install.
