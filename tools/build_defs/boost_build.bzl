@@ -18,7 +18,7 @@ def _boost_build(ctx):
     attrs = create_attrs(
         ctx.attr,
         configure_name = "BuildBoost",
-        configure_script = _create_configure_script,
+        create_configure_script = _create_configure_script,
         make_commands = ["./b2 install --prefix=. --with-{}".format(ctx.attr.boost_library)],
     )
     return cc_external_rule_impl(ctx, attrs)
