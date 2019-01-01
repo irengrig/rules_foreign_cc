@@ -14,11 +14,11 @@ load(
     "get_tools_info",
     "is_debug_mode",
 )
-load("@foreign_cc_platform_utils//:os_info.bzl", "OSInfo")
 load(":configure_script.bzl", "create_configure_script")
+load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "create_context")
 
 def _configure_make(ctx):
-    copy_results = "copy_dir_contents_to_dir $BUILD_TMPDIR/$INSTALL_PREFIX $INSTALLDIR\n"
+    copy_results = "copy_dir_contents_to_dir $$BUILD_TMPDIR$$/$$INSTALL_PREFIX$$ $$INSTALLDIR$$\n"
 
     attrs = create_attrs(
         ctx.attr,
@@ -40,9 +40,11 @@ def _create_configure_script(configureParameters):
 
     define_install_prefix = "export INSTALL_PREFIX=\"" + _get_install_prefix(ctx) + "\"\n"
 
+    shell_ = create_context(ctx)
     configure = create_configure_script(
         ctx.workspace_name,
-        ctx.attr._target_os[OSInfo],
+        # as default, pass execution OS as target OS
+        shell_.shell.os_name(),
         tools,
         flags,
         root,
@@ -84,4 +86,5 @@ configure_make = rule(
     fragments = ["cpp"],
     output_to_genfiles = True,
     implementation = _configure_make,
+    toolchains = ["//tools/build_defs/shell_toolchain/toolchains:shell_commands"],
 )

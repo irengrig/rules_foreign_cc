@@ -8,6 +8,7 @@ tests = [
     "//cmake_nghttp2:test_nghttp2",
     "//built_ninja:test_ninja_version",
     "@rules_foreign_cc//test:cmake_script_test_suite",
+    "@rules_foreign_cc//test:shell_script_conversion_suite",
     "//cc_configure_make:libevent_echosrv1",
 ]
 
