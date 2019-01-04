@@ -240,6 +240,10 @@ def cc_external_rule_impl(ctx, attrs):
     )
 
     script_lines = [
+        "echo \"\"",
+        "echo \"{}\"".format(version_and_lib),
+        "echo \"\"",
+        "script_prelude",
         "\n".join(define_variables),
         "path $$EXT_BUILD_ROOT$$",
         "mkdirs $$EXT_BUILD_DEPS$$",
@@ -264,14 +268,8 @@ def cc_external_rule_impl(ctx, attrs):
     ]
 
     script_text = convert_shell_script(
-        [
-            "echo \"\"",
-            "echo \"{}\"".format(version_and_lib),
-            "echo \"\"",
-            "script_prelude",
-        ],
-        script_lines,
         shell_,
+        script_lines,
     )
     print("script text: " + script_text)
 

@@ -1,32 +1,24 @@
 load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "call_shell")
 load("//tools/build_defs/shell_toolchain/toolchains:commands.bzl", "PLATFORM_COMMANDS")
 
-def convert_shell_script(script_prelude, script, shell_context):
+def convert_shell_script(shell_context, script):
     # 0. split in lines merged fragments
-    new_script_prelude = []
-    for fragment in script_prelude:
-        new_script_prelude += fragment.splitlines()
-
     new_script = []
     for fragment in script:
         new_script += fragment.splitlines()
 
-    script_prelude = new_script_prelude
     script = new_script
 
     # 1. replace all variable references
-    script_prelude = [replace_var_ref(line, shell_context) for line in script_prelude]
     script = [replace_var_ref(line, shell_context) for line in script]
 
     # 2. call the functions or replace export statements
-    script_prelude = [do_function_call(line, shell_context) for line in script_prelude]
     script = [do_function_call(line, shell_context) for line in script]
 
     # 3. when functions are calling other functions, which are not defined yet
-    [do_function_call(line, shell_context) for line in script_prelude]
     [do_function_call(line, shell_context) for line in script]
 
-    result = "\n".join(script_prelude + shell_context.prelude.values() + script)
+    result = "\n".join(shell_context.prelude.values() + script)
 
     return result
 
