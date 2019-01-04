@@ -20,6 +20,7 @@ load(
 load(":cmake_script.bzl", "create_cmake_script")
 load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "create_context")
 load("//tools/build_defs/native_tools:tool_access.bzl", "get_cmake_data", "get_ninja_data")
+load("@rules_foreign_cc//tools/build_defs:shell_script_helper.bzl", "os_name")
 
 def _cmake_external(ctx):
     cmake_data = get_cmake_data(ctx)
@@ -62,12 +63,11 @@ def _create_configure_script(configureParameters):
     flags = get_flags_info(ctx)
     no_toolchain_file = ctx.attr.cache_entries.get("CMAKE_TOOLCHAIN_FILE") or not ctx.attr.generate_crosstool_file
 
-    shell_ = create_context(ctx)
     define_install_prefix = "export INSTALL_PREFIX=\"" + _get_install_prefix(ctx) + "\"\n"
     configure_script = create_cmake_script(
         ctx.workspace_name,
         # as default, pass execution OS as target OS
-        shell_.shell.os_name(),
+        os_name(ctx),
         configureParameters.attrs.cmake_path,
         tools,
         flags,

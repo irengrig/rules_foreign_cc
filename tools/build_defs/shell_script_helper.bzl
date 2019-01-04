@@ -1,7 +1,12 @@
-load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "call_shell")
+load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "call_shell", "create_context")
 load("//tools/build_defs/shell_toolchain/toolchains:commands.bzl", "PLATFORM_COMMANDS")
 
-def convert_shell_script(shell_context, script):
+def os_name(ctx):
+    return call_shell(create_context(ctx), "os_name")
+
+def convert_shell_script(ctx, script):
+    shell_context = create_context(ctx)
+
     # 0. split in lines merged fragments
     new_script = []
     for fragment in script:

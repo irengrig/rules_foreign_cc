@@ -15,7 +15,7 @@ load(
     "is_debug_mode",
 )
 load(":configure_script.bzl", "create_configure_script")
-load("//tools/build_defs/shell_toolchain/toolchains:access.bzl", "create_context")
+load("@rules_foreign_cc//tools/build_defs:shell_script_helper.bzl", "os_name")
 
 def _configure_make(ctx):
     copy_results = "copy_dir_contents_to_dir $$BUILD_TMPDIR$$/$$INSTALL_PREFIX$$ $$INSTALLDIR$$\n"
@@ -40,11 +40,10 @@ def _create_configure_script(configureParameters):
 
     define_install_prefix = "export INSTALL_PREFIX=\"" + _get_install_prefix(ctx) + "\"\n"
 
-    shell_ = create_context(ctx)
     configure = create_configure_script(
         ctx.workspace_name,
         # as default, pass execution OS as target OS
-        shell_.shell.os_name(),
+        os_name(ctx),
         tools,
         flags,
         root,

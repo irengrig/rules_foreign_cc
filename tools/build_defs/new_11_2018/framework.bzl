@@ -12,9 +12,8 @@ load(
     "targets_windows",
 )
 load("@rules_foreign_cc//tools/build_defs:detect_root.bzl", "detect_root")
-load("@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:access.bzl", "call_shell", "create_context")
 load("@rules_foreign_cc//tools/build_defs:run_shell_file_utils.bzl", "copy_directory", "fictive_file_in_genroot")
-load("@rules_foreign_cc//tools/build_defs:convert_shell_script.bzl", "convert_shell_script", "replace_var_ref")
+load("@rules_foreign_cc//tools/build_defs:shell_script_helper.bzl", "convert_shell_script", "os_name")
 
 """ Dict with definitions of the context attributes, that customize cc_external_rule_impl function.
  Many of the attributes have default values.
@@ -195,7 +194,6 @@ def cc_external_rule_impl(ctx, attrs):
          and some other fields provided by the rule, which have been passed to create_attrs.
     """
     lib_name = attrs.lib_name or ctx.attr.name
-    shell_ = create_context(ctx)
 
     inputs = _define_inputs(attrs)
     outputs = _define_outputs(ctx, attrs, lib_name)
@@ -203,7 +201,7 @@ def cc_external_rule_impl(ctx, attrs):
 
     cc_env = _correct_path_variable(get_env_vars(ctx))
     set_cc_envs = ""
-    execution_os_name = shell_.shell.os_name()
+    execution_os_name = os_name(ctx)
     if execution_os_name != "osx":
         set_cc_envs = "\n".join(["export {}=\"{}\"".format(key, cc_env[key]) for key in cc_env])
 
@@ -268,10 +266,7 @@ def cc_external_rule_impl(ctx, attrs):
         "cd $$EXT_BUILD_ROOT$$",
     ]
 
-    script_text = convert_shell_script(
-        shell_,
-        script_lines,
-    )
+    script_text = convert_shell_script(ctx, script_lines)
     print("script text: " + script_text)
 
     execution_requirements = {"block-network": ""}
