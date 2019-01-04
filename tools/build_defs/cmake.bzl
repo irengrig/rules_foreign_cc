@@ -132,6 +132,6 @@ cmake_external = rule(
     toolchains = [
         "@rules_foreign_cc//tools/build_defs:cmake_toolchain",
         "@rules_foreign_cc//tools/build_defs:ninja_toolchain",
-        "@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:shell_commands"
+        "@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:shell_commands",
     ],
 )

@@ -73,6 +73,7 @@ def rules_foreign_cc_dependencies(native_tools_toolchains = [], register_default
     """
     repositories()
     _platform_dependent_init(name = "foreign_cc_platform_utils")
+
     # todo this should also be renamed
     workspace_part()
     generate_implementation_fragments(name = "foreign_cc_impl")
