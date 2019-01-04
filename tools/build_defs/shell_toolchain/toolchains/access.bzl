@@ -21,7 +21,7 @@ def call_shell(shell_context, method_, *args):
     descriptor = PLATFORM_COMMANDS[method_]
     args_info = descriptor.arguments
 
-    args_list = args[0]
+    args_list = args[0] if len(args) > 0 else []
     if type(args_list) != type([]):
         args_list = args
 

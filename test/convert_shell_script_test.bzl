@@ -2,7 +2,7 @@
 
 load("@bazel_skylib//lib:unittest.bzl", "asserts", "unittest")
 load(
-    "//tools/build_defs:convert_shell_script.bzl",
+    "//tools/build_defs:shell_script_helper.bzl",
     "convert_shell_script",
     "do_function_call",
     "replace_exports",
@@ -97,6 +97,9 @@ def _export_var(name, value):
 def _script_prelude():
     return "set -e"
 
+def _os_name():
+    return "Fuchsia"
+
 def _do_function_call_test(ctx):
     env = unittest.begin(ctx)
 
@@ -107,12 +110,14 @@ def _do_function_call_test(ctx):
         "export ROOT=ABC": "export1 ROOT=ABC",
         "export ROOT=\"A B C\"": "export1 ROOT=\"A B C\"",
         "script_prelude": "set -e",
+        "os_name": "Fuchsia",
     }
     shell_ = struct(
         symlink_contents_to_dir = _funny_fun,
         echo = _echo,
         export_var = _export_var,
         script_prelude = _script_prelude,
+        os_name = _os_name,
     )
     shell_context = struct(
         prelude = {},
