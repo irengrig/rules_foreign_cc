@@ -6,7 +6,7 @@ _function_and_call_type = type(FunctionAndCall(text = ""))
 
 def create_context(ctx):
     return struct(
-        shell = ctx.toolchains["//tools/build_defs/shell_toolchain/toolchains:shell_commands"].data,
+        shell = ctx.toolchains["@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:shell_commands"].data,
         prelude = {},
     )
 

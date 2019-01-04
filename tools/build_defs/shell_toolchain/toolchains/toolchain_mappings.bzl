@@ -13,7 +13,7 @@ TOOLCHAIN_MAPPINGS = [
             "@bazel_tools//platforms:linux",
             "@bazel_tools//platforms:x86_64",
         ],
-        file = "//tools/build_defs/shell_toolchain/toolchains/impl:linux_commands.bzl",
+        file = "@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains/impl:linux_commands.bzl",
         target_compatible_with = [
             "@bazel_tools//platforms:linux",
             "@bazel_tools//platforms:x86_64",
@@ -24,7 +24,7 @@ TOOLCHAIN_MAPPINGS = [
             "@bazel_tools//platforms:osx",
             "@bazel_tools//platforms:x86_64",
         ],
-        file = "//tools/build_defs/shell_toolchain/toolchains/impl:osx_commands.bzl",
+        file = "@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains/impl:osx_commands.bzl",
         # todo probably keep only execution info
         target_compatible_with = [
             "@bazel_tools//platforms:osx",

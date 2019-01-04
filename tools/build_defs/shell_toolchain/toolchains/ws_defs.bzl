@@ -11,4 +11,4 @@ def workspace_part():
         files = [item.file for item in TOOLCHAIN_MAPPINGS],
         symbols = PLATFORM_COMMANDS.keys(),
     )
-    native.register_toolchains("//tools/build_defs/shell_toolchain/toolchains:all")
+    native.register_toolchains("@rules_foreign_cc//tools/build_defs/shell_toolchain/toolchains:all")
