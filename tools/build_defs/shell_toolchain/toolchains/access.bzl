@@ -44,6 +44,9 @@ def call_shell(shell_context, method_, *args):
             shell_context.prelude[method_] = define_function(method_, result.text)
         if hasattr(result, "call"):
             return result.call
-        return " ".join([method_] + [str(arg) for arg in args_list])
+        return " ".join([method_] + [_wrap_if_needed(str(arg)) for arg in args_list])
 
     return result
+
+def _wrap_if_needed(arg):
+    return "\"" + arg + "\"" if arg.find(" ") >= 0 else arg

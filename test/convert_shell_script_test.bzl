@@ -131,6 +131,20 @@ def _touch(path):
 def _define_function(name, text):
     return "function " + name + "() {\n  " + text + "\n}"
 
+def _cleanup_function(message_cleaning, message_keeping):
+    text = "\n".join([
+        "local ecode=$?",
+        "if [ $ecode -eq 0 ]; then",
+        message_cleaning,
+        "rm -rf $BUILD_TMPDIR $EXT_BUILD_DEPS",
+        "else",
+        "echo \"\"",
+        message_keeping,
+        "echo \"\"",
+        "fi",
+    ])
+    return FunctionAndCall(text = text)
+
 def _do_function_call_with_body_test(ctx):
     env = unittest.begin(ctx)
 
@@ -139,10 +153,25 @@ def _do_function_call_with_body_test(ctx):
             "text": "function touch() {\n  call_touch $1\n}",
             "call": "touch a/b/c",
         },
+        "cleanup_function \"echo $$CLEANUP_MSG$$\" \"echo $$KEEP_MSG1$$ && echo $$KEEP_MSG2$$\"": {
+            "text": """function cleanup_function() {
+  local ecode=$?
+if [ $ecode -eq 0 ]; then
+echo $$CLEANUP_MSG$$
+rm -rf $BUILD_TMPDIR $EXT_BUILD_DEPS
+else
+echo ""
+echo $$KEEP_MSG1$$ && echo $$KEEP_MSG2$$
+echo ""
+fi
+}""",
+            "call": "cleanup_function \"echo $$CLEANUP_MSG$$\" \"echo $$KEEP_MSG1$$ && echo $$KEEP_MSG2$$\"",
+        },
     }
     shell_ = struct(
         touch = _touch,
         define_function = _define_function,
+        cleanup_function = _cleanup_function,
     )
     for case in cases:
         shell_context = struct(

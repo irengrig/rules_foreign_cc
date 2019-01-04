@@ -91,8 +91,9 @@ def split_arguments(text):
         if not separator2:
             fail("Incorrect quoting in fragment: {}".format(current))
 
+        before = before.strip(" ")
         if before:
-            parts += before.strip(" ").split(" ")
+            parts += before.split(" ")
         parts.append(quoted)
         current = after2
 
