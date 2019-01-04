@@ -120,22 +120,19 @@ done
 """
     return FunctionAndCall(text = text)
 
-def _multiline_echo(message):
-    return "\n".join(["echo \"{}\"".format(line) for line in message.split("\n")])
-
 def cleanup_function(message_cleaning, message_keeping):
     text = "\n".join([
         "local ecode=$?",
         "if [ $ecode -eq 0 ]; then",
-        _multiline_echo(message_cleaning),
+        message_cleaning,
         "rm -rf $BUILD_TMPDIR $EXT_BUILD_DEPS",
         "else",
         "echo \"\"",
-        _multiline_echo(message_keeping),
+        message_keeping,
         "echo \"\"",
         "fi",
     ])
-    return FunctionAndCall(text = text)
+    return FunctionAndCall(text = text, call = "trap \"cleanup_function\" EXIT")
 
 def children_to_path(dir_):
     text = """if [ -d {dir_} ]; then

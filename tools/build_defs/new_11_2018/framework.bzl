@@ -229,15 +229,14 @@ def cc_external_rule_impl(ctx, attrs):
         "export INSTALLDIR=$$EXT_BUILD_ROOT$$/" + empty.file.dirname + "/" + lib_name,
     ]
 
-    trap_function = call_shell(
-        shell_,
-        "cleanup_function",
-        "rules_foreign_cc: Cleaning temp directories",
-        replace_var_ref("rules_foreign_cc: Keeping temp build directory $$BUILD_TMPDIR$$\
- and dependencies directory $$EXT_BUILD_DEPS$$ for debug.\
-\nrules_foreign_cc: Please note that the directories inside a sandbox are still\
- cleaned unless you specify '--sandbox_debug' Bazel command line flag.", shell_),
-    )
+    trap_function = "\n".join([
+        "export CLEANUP_MSG=\"rules_foreign_cc: Cleaning temp directories\"",
+        "export KEEP_MSG1=\"rules_foreign_cc: Keeping temp build directory $$BUILD_TMPDIR$$\
+ and dependencies directory $$EXT_BUILD_DEPS$$ for debug.\"",
+        "export KEEP_MSG2=\"rules_foreign_cc: Please note that the directories inside a sandbox are still\
+ cleaned unless you specify '--sandbox_debug' Bazel command line flag.\"",
+        "cleanup_function \"echo $$CLEANUP_MSG$$\" \"echo $$KEEP_MSG1$$ && echo $$KEEP_MSG2$$\"",
+    ])
 
     script_lines = [
         "echo \"\"",
@@ -249,7 +248,9 @@ def cc_external_rule_impl(ctx, attrs):
         "mkdirs $$EXT_BUILD_DEPS$$",
         "mkdirs $$INSTALLDIR$$",
         _print_env(),
-        "trap \"cleanup_function\" EXIT",
+        # the call trap is defined inside, in a way how the shell function should be called
+        # see, for instance, linux_commands.bzl
+        trap_function,
         "\n".join(_copy_deps_and_tools(inputs)),
         # replace placeholder with the dependencies root
         "define_absolute_paths $$EXT_BUILD_DEPS$$ $$EXT_BUILD_DEPS$$",
