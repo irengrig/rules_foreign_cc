@@ -29,6 +29,9 @@ def path(expression):
 def touch(path):
     return "touch " + path
 
+def rm_rf(path):
+    return "rm -rf " + path
+
 def mkdirs(path):
     return "mkdir -p " + path
 

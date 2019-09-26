@@ -243,6 +243,7 @@ def cc_external_rule_impl(ctx, attrs):
         "##script_prelude##",
         "\n".join(define_variables),
         "##path## $$EXT_BUILD_ROOT$$",
+        "##rm_rf## $$EXT_BUILD_DEPS$$",
         "##mkdirs## $$EXT_BUILD_DEPS$$",
         "##mkdirs## $$INSTALLDIR$$",
         _print_env(),
